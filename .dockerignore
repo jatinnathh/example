@@ -1,0 +1,8 @@
+__pycache__/
+*.log
+*.DS_Store
+.expo/
+.expo-shared/
+node_modules/
+.vscode/
+.ipynb_checkpoints/

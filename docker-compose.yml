@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  backend:
+    build: .
+    ports:
+      - "8000:8000"
+      - "19000:19000"
+      - "19001:19001"
+      - "19002:19002"
+      - "19006:19006"
+    stdin_open: true
+    tty: true
+    environment:
+      EXPO_USE_STDIN: "1"
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: Jatin11
+      DB_NAME: ai_image_generator
+      NODE_ENV: development
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend:/app/backend
+      - ./screens:/app/screens
+      # - ./backend/ip.json:/app/backend/ip.json
+      - ./backend/ip.json:/app/screens/ip.json
+
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
+      - ./app.json:/app/app.json
+      - ./assets:/app/assets
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:8
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Jatin11
+      MYSQL_DATABASE: ai_image_generator
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+volumes:
+  mysql_data:
